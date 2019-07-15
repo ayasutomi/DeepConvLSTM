@@ -31,14 +31,14 @@ if __name__ == '__main__':
     test_inputs, test_labels = data.opp_sliding_window(test_inputs, test_labels, sliding_window_length, sliding_window_step)
 
     # Create Placeholders of shape (n_x, n_y)
-    X = tf.placeholder(tf.float32, [None, sliding_window_length, num_features], name="X")
+    X = tf.placeholder(tf.float32, [None, sliding_window_length, 1, num_features], name="X")
     Y = tf.placeholder(tf.float32, [None, n_classes], name="Y")
 
     # Initialize parameters
     tf.set_random_seed(1)                   # so that your "random" numbers match ours
 
     # Construct model
-    model = deepConvLSTM()
+    model = deepConvLSTM(n_classes, X.shape )
     logits = model._create_model(X)
     prediction = tf.nn.softmax(logits)
 
