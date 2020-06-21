@@ -29,7 +29,7 @@ class deepConvLSTM():
         ft = self.flatten(m3, [-1, int(flatten_shape) ])
         fc1 = self.dense(ft,flatten_shape,self.rnn_size, activation= 'relu', name = "dense1")
         d = tf.nn.dropout(fc1, keep_prob = self.dropout_rate)
-        return self.dense(d, self.rnn_size, self.num_classes, activation= 'softmax', name = "dense2")
+        return self.dense(d, self.rnn_size, self.num_classes, activation= None, name = "dense2")
 
     # Create some wrappers for simplicity
     def conv1d(self, x, kernel_size, filter_size, in_channels, strides=1, name = None):
@@ -54,6 +54,8 @@ class deepConvLSTM():
         x = tf.add(tf.matmul(x, w), b)
         if activation == 'relu':
             return tf.nn.relu(x)
+        else:
+            return x
     
 
 

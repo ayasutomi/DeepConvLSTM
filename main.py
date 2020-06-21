@@ -17,6 +17,7 @@ if __name__ == '__main__':
     max_len = 150
     learn_rate = 0.001
     os.environ['CUDA_VISIBLE_DEVICES'] = str(0)
+    seed = 1
 
     exist = os.path.isfile('./data/oppChallenge_gestures.data')
     if not exist:
@@ -35,7 +36,7 @@ if __name__ == '__main__':
     Y = tf.placeholder(tf.float32, [None, n_classes], name="Y")
 
     # Initialize parameters
-    tf.set_random_seed(1)                   # so that your "random" numbers match ours
+    tf.set_random_seed(seed)                   # so that your "random" numbers match ours
 
     # Construct model
     model = deepConvLSTM(n_classes, X.shape )
@@ -43,11 +44,11 @@ if __name__ == '__main__':
     prediction = tf.nn.softmax(logits)
 
     # Define loss and optimizer
-    cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=Y))
+    cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=logits, labels=Y))
     optimizer = tf.train.AdamOptimizer(learning_rate=learn_rate).minimize(cost)
 
     # Evaluate model
-    correct_pred = tf.equal(tf.argmax(prediction, 1), tf.argmax(Y, 1))
+    correct_pred = tf.equal(tf.argmax(logits, 1), tf.argmax(Y, 1))
     accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
     
     # Initialize all the variables
@@ -62,7 +63,7 @@ if __name__ == '__main__':
         # Do the training loop
         for epoch in range(num_epochs):
             epoch_cost = 0.                       # Defines a cost related to an epoch
-            num_minibatches = int(inputs.shape(0) / batch_size) # number of minibatches of size minibatch_size in the train set
+            num_minibatches = int(inputs.shape[0] / batch_size) # number of minibatches of size minibatch_size in the train set
             seed = seed + 1
             minibatches = data.random_mini_batches(inputs, labels, batch_size, seed)
 
